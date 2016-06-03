@@ -1,24 +1,24 @@
 class UrlsController < ApplicationController
   def index
+    @urls = Url.all
   end
 
   def new
+    @url = Url.new
   end
 
   def create
-    url = Url.new(params[:long_url])
-    url.short_url = url.retrieve_short_url
-    if url.save
-      @url = url
-      redirect_to root_url
+    @url = Url.new(url_params)
+    if @url.save
+      redirect_to urls_path
     else
-
+      @errors = "Error!"
     end
+    redirect_to urls_path
   end
 
   private
   def url_params
-    params.require(:url).permit(:url)
+    params.permit(:long_url).merge(short_url: SecureRandom.base64[0..8])
   end
-
 end
